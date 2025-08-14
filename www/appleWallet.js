@@ -142,6 +142,26 @@ var AppleWallet = {
             }, PLUGIN_NAME, 'completeAddPaymentPass', [encCardData]);
         });
     },
+
+
+/**
+ * @function presentWalletExtension
+ * @description Presents the Wallet Extension view controller (iOS 17+ only)
+ * @param {Function} [successCallback] - Optional success callback
+ * @param {Function} [errorCallback] - Optional error callback
+ * @returns {Promise<string>} - Message indicating result
+ */
+presentWalletExtension: function(successCallback, errorCallback) {
+    return new Promise(function(resolve, reject) {
+        exec(function(message) {
+            executeCallback(successCallback, message);
+            resolve(message);
+        }, function(message) {
+ []);
+    });
+},
+
+	
 }
 
 module.exports = AppleWallet;
