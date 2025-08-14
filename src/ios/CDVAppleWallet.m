@@ -451,23 +451,7 @@ typedef void (^completedPaymentProcessHandler)(PKAddPaymentPassRequest *request)
     return commandToSend;
 }
 
-- (void)presentWalletExtension:(CDVInvokedUrlCommand *)command {
-    if (@available(iOS 17.0, *)) {
-        PKPassLibrary *passLibrary = [[PKPassLibrary alloc] init];
-        PKWalletExtensionViewController *walletVC = [PKWalletExtensionViewController walletExtensionViewControllerForPassLibrary:passLibrary];
-        if (walletVC) {
-            [self.viewController presentViewController:walletVC animated:YES completion:nil];
-            CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"Wallet Extension presented"];
-            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-        } else {
-            CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Wallet Extension not available"];
-            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-        }
-    } else {
-        CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Wallet Extension requires iOS 17+"];
-        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-    }
-}
+
 
 
 @end
