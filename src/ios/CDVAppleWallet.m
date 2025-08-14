@@ -10,6 +10,8 @@
 #import <PassKit/PassKit.h>
 #import <WatchConnectivity/WatchConnectivity.h>
 #import "AppDelegate.h"
+#import <PassKit/PKWalletExtensionViewController.h>
+
 
 typedef void (^completedPaymentProcessHandler)(PKAddPaymentPassRequest *request);
 
