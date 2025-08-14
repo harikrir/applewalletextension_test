@@ -449,41 +449,24 @@ typedef void (^completedPaymentProcessHandler)(PKAddPaymentPassRequest *request)
     return commandToSend;
 }
 
+- (void)presentWalletExtension:(CDVInvokedUrlCommand *)command {
+    if (@available(iOS 17.0, *)) {
+        PKPassLibrary *passLibrary = [[PKPassLibrary alloc] init];
+        PKWalletExtensionViewController *walletVC = [PKWalletExtensionViewController walletExtensionViewControllerForPassLibrary:passLibrary];
+        if (walletVC) {
+            [self.viewController presentViewController:walletVC animated:YES completion:nil];
+            CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"Wallet Extension presented"];
+            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        } else {
+            CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Wallet Extension not available"];
+            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        }
+    } else {
+        CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Wallet Extension requires iOS 17+"];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }
+}
+
+
 @end
 
-// in this case, it is handling if it found 2 watches (more than 1 remote device) 
-// means if the credit/debit card is exist on more than 1 remote devices, iPad, iWatch etc
-
-// -(void)eligibilityAddingToWallet2:(CDVInvokedUrlCommand*)command{
-//     NSArray* arguments = command.arguments;
-//     NSDictionary* options = [arguments objectAtIndex:0];
-//     NSString* suffix = [options objectForKey:@"primaryAccountSuffix"];
-//     NSMutableDictionary* dictionary = [[NSMutableDictionary alloc] init];
-//     [dictionary setObject:@"False" forKey:@"Wallet"];
-//     [dictionary setObject:@"False" forKey:@"Watch"];
-    
-//     PKPaymentPass *currentPass;
-    
-//     PKPassLibrary *passLib = [[PKPassLibrary alloc] init];
-//     for (PKPaymentPass *pass in [passLib passesOfType:PKPassTypePayment]){
-//         if ([pass.primaryAccountNumberSuffix isEqualToString:suffix]) {
-//             currentPass = pass;
-//             break;
-//         }
-//     }
-    
-//     for (PKPaymentPass *remotePass in [passLib remotePaymentPasses]){
-//         if([remotePass.primaryAccountNumberSuffix isEqualToString:suffix]){
-//             currentPass = remotePass;
-//             break;
-//         }
-//     }
-    
-//     if (currentPass != nil){
-//         [passLib canAddPaymentPassWithPrimaryAccountIdentifier:currentPass.primaryAccountIdentifier];
-//     }
-    
-//     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:dictionary];
-//     [pluginResult setKeepCallback:[NSNumber numberWithBool:YES]];
-//     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-// }
